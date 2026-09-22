@@ -1,12 +1,10 @@
 ---
+layout: ../../layouts/MarkdownPostLayout.astro
 title: 'Lengua Hibrida'
 pubDate: 2026-09-22
 description: 'This is only an hyperstision.'
 author: 'Nyxa NV'
-image:
-    url: 'https://docs.astro.build/assets/rose.webp'
-    alt: 'The Astro logo on a dark background with a pink glow.'
-tags: ["astro", "blogging", "learning in public"]
+tags: ["teoria", "cultura", "escrito"]
 ---
 # Contexto Histórico Cultural con respecto a los estudios de la representación del Mito.
 
