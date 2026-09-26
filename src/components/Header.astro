@@ -2,9 +2,25 @@
 import Menu from './Menu.astro';
 import Navigation from './Navigation.astro';
 ---
-<header>
-  <nav>
+<header class="site-header">
+  <div class="header-container">
     <Menu />
     <Navigation />
-  </nav>
+  </div>
 </header>
+
+<style>
+  .site-header {
+    width: 100%;
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .header-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+  }
+</style>

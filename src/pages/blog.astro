@@ -2,14 +2,13 @@
 import BlogLayout from '../layouts/BlogLayout.astro';
 import BlogPost from '../components/BlogPost.astro';
 
-const allPosts = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
-const pageTitle = "Blog";
+// Carga de post usando método meta.glob
+const allPosts: any[] = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
+// Ordenados los post de más reciente al más antiguo 
+allPosts.sort((a, b) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf());const pageTitle = "Blog";
 ---
 
 <BlogLayout pageTitle={pageTitle}>
   <ul>
-    {allPosts.map((post: any) => (
-      <BlogPost url={post.url} title={post.frontmatter.title} />
-    ))}
-  </ul>
+    {allPosts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title} />)}  </ul>
 </BlogLayout>

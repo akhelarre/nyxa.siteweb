@@ -1,5 +1,27 @@
 ---
 ---
-<button aria-expanded="false" aria-controls="main-menu" class="menu">
-  Menu
+<button aria-expanded="false" aria-controls="main-menu" class="menu-btn"> ☰
 </button>
+
+<style>
+  .menu-btn {
+    background-color: #0d0950;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 9px 15px;
+    cursor: pointer;
+  }
+  
+  .menu-btn:hover {
+    opacity: 0.7;
+  }
+
+  /* Ocultar el botón en pantallas grandes */
+  @media screen and (min-width: 636px) {
+    .menu-btn {
+      display: none;
+    }
+  }
+</style>

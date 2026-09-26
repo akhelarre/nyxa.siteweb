@@ -5,3 +5,48 @@ const { title, url } = Astro.props;
 <li>
   <a href={url}>{title}</a>
 </li>
+
+<style>
+  .post-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .post-info {
+    flex: 1;
+  }
+
+  .post-card h3 {
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .post-card h3 a {
+    color: #ffffff;
+  }
+
+  .post-desc {
+    font-size: 0.95rem;
+    color: #999999;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .post-meta {
+    font-size: 0.8rem;
+    color: #777777;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .post-thumb img {
+    width: 160px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #333;
+  }
+</style>
