@@ -55,29 +55,24 @@
 </style>
 
 <script>
-  function setupMenus() {
-    const wrappers = document.querySelectorAll('.menu-wrapper');
+  // Seleccionar inmediatamente los elementos al cargar el módulo
+  const wrappers = document.querySelectorAll('.menu-wrapper');
 
-    wrappers.forEach((wrapper) => {
-      const btn = wrapper.querySelector('.menu-toggle-btn');
+  wrappers.forEach((wrapper) => {
+    const btn = wrapper.querySelector('.menu-toggle-btn');
 
-      if (btn) {
-        // Usar un listener limpio que evite conflictos táctiles
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          wrapper.classList.toggle('is-open');
-        });
-      }
-    });
-
-    // Cerrar al hacer clic fuera de cualquier menú abierto
-    document.addEventListener('click', () => {
-      wrappers.forEach((wrapper) => {
-        wrapper.classList.remove('is-open');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        wrapper.classList.toggle('is-open');
       });
-    });
-  }
+    }
+  });
 
-  setupMenus();
-  document.addEventListener('astro:page-load', setupMenus);
+  // Cerrar al hacer clic fuera
+  document.addEventListener('click', () => {
+    wrappers.forEach((wrapper) => {
+      wrapper.classList.remove('is-open');
+    });
+  });
 </script>
