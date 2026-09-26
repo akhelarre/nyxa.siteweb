@@ -35,23 +35,25 @@
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 180px;
-    background-color: white;
+    min-width: 200px;
+    background-color: #fce7f3; /* Fondo acorde al tema light */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-radius: 6px;
-    padding: 0.5rem;
+    padding: 0.75rem;
     z-index: 100;
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
-  /* Clase que activa la apertura desde el script */
+  /* Clase que activa la apertura */
   .dropdown-content.is-open {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
   }
 
-  /* Asegurar colores adaptados si está en modo oscuro */
+  /* Modo oscuro para el desplegable */
   :global(html.dark) .dropdown-content {
-    background-color: #1f2937;
+    background-color: #1a0b14;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 </style>
@@ -62,13 +64,11 @@
     const dropdown = document.getElementById('menu-dropdown');
 
     if (btn && dropdown) {
-      // Usar 'click' con prevención de propagación
       btn.onclick = (e) => {
         e.stopPropagation();
         dropdown.classList.toggle('is-open');
       };
 
-      // Cerrar al hacer clic fuera
       window.onclick = () => {
         if (dropdown.classList.contains('is-open')) {
           dropdown.classList.remove('is-open');
@@ -77,7 +77,6 @@
     }
   }
 
-  // Ejecutar al cargar y tras transiciones de páginas en Astro
   setupMenu();
   document.addEventListener('astro:page-load', setupMenu);
 </script>
