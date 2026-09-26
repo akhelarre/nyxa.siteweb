@@ -1,11 +1,18 @@
 ---
 import Menu from './Menu.astro';
 import Navigation from './Navigation.astro';
+import ThemeIcon from './ThemeIcon.astro';
 ---
+
 <header class="site-header">
   <div class="header-container">
-    <Menu />
-    <Navigation />
+    <nav class="nav-wrapper">
+      <div class="top-row">
+        <ThemeIcon />
+        <Menu />
+      </div>
+      <Navigation />
+    </nav>
   </div>
 </header>
 
@@ -19,8 +26,32 @@ import Navigation from './Navigation.astro';
   .header-container {
     max-width: 900px;
     margin: 0 auto;
+  }
+
+  .nav-wrapper {
     display: flex;
-    justify-content: left;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .top-row {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+  }
+
+  :global(html.dark) .site-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Forzar el color de los enlaces de navegación en modo oscuro de manera local/global */
+  :global(html.dark) :global(.nav-links a),
+  :global(html.dark) nav a {
+    color: #f3f4f6 !important;
+  }
+
+  :global(html.dark) :global(.nav-links a:hover),
+  :global(html.dark) nav a:hover {
+    color: #ff9776 !important;
   }
 </style>
