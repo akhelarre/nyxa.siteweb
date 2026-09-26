@@ -9,12 +9,20 @@ import ThemeIcon from './ThemeIcon.astro';
     <nav class="nav-wrapper">
       <div class="top-row">
         <ThemeIcon />
-        <Menu>
-          <Navigation />
-        </Menu>
+        <!-- Menú desplegable exclusivo para móviles -->
+        <div class="mobile-menu">
+          <Menu>
+            <Navigation />
+          </Menu>
+        </div>
+      </div>
+      <!-- Navegación normal exclusiva para PC -->
+      <div class="desktop-navigation">
+        <Navigation />
       </div>
     </nav>
   </div>
+</header>
 </header>
 
 <style>
@@ -41,11 +49,30 @@ import ThemeIcon from './ThemeIcon.astro';
     align-items: center;
   }
 
+  /* Control de visibilidad según el dispositivo */
+  .mobile-menu {
+    display: block;
+  }
+
+  .desktop-navigation {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-menu {
+      display: none;
+    }
+    
+    .desktop-navigation {
+      display: block;
+    }
+  }
+
   :global(html.dark) .site-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Forzar el color de los enlaces de navegación en modo oscuro de manera local/global */
+  /* Forzar el color de los enlaces de navegación en modo oscuro */
   :global(html.dark) :global(.nav-links a),
   :global(html.dark) nav a {
     color: #f3f4f6 !important;
