@@ -1,15 +1,12 @@
----
-// Menu.astro
----
 <div class="menu-wrapper">
-  <button id="menu-toggle-btn" class="menu-btn" aria-label="Abrir menú">
+  <button type="button" class="menu-toggle-btn" aria-label="Abrir menú">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
       <line x1="3" y1="18" x2="21" y2="18"></line>
     </svg>
   </button>
-  <div id="menu-dropdown" class="dropdown-content">
+  <div class="dropdown-content">
     <slot />
   </div>
 </div>
@@ -20,7 +17,7 @@
     display: inline-block;
   }
 
-  .menu-btn {
+  .menu-toggle-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -36,7 +33,7 @@
     top: 100%;
     left: 0;
     min-width: 200px;
-    background-color: #fce7f3; /* Fondo acorde al tema light */
+    background-color: #fce7f3;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-radius: 6px;
     padding: 0.75rem;
@@ -44,14 +41,13 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
-  /* Clase que activa la apertura */
-  .dropdown-content.is-open {
+  /* Clase que activa la apertura usando clases en lugar de IDs */
+  .menu-wrapper.is-open .dropdown-content {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
 
-  /* Modo oscuro para el desplegable */
   :global(html.dark) .dropdown-content {
     background-color: #1a0b14;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -59,24 +55,29 @@
 </style>
 
 <script>
-  function setupMenu() {
-    const btn = document.getElementById('menu-toggle-btn');
-    const dropdown = document.getElementById('menu-dropdown');
+  function setupMenus() {
+    const wrappers = document.querySelectorAll('.menu-wrapper');
 
-    if (btn && dropdown) {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle('is-open');
-      };
+    wrappers.forEach((wrapper) => {
+      const btn = wrapper.querySelector('.menu-toggle-btn');
 
-      window.onclick = () => {
-        if (dropdown.classList.contains('is-open')) {
-          dropdown.classList.remove('is-open');
-        }
-      };
-    }
+      if (btn) {
+        // Usar un listener limpio que evite conflictos táctiles
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          wrapper.classList.toggle('is-open');
+        });
+      }
+    });
+
+    // Cerrar al hacer clic fuera de cualquier menú abierto
+    document.addEventListener('click', () => {
+      wrappers.forEach((wrapper) => {
+        wrapper.classList.remove('is-open');
+      });
+    });
   }
 
-  setupMenu();
-  document.addEventListener('astro:page-load', setupMenu);
+  setupMenus();
+  document.addEventListener('astro:page-load', setupMenus);
 </script>
