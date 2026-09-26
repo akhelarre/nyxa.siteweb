@@ -1,44 +1,83 @@
 ---
+// Menu.astro
 ---
-<button aria-expanded="false" aria-controls="main-menu" class="menu-btn"> ☰
-</button>
+<div class="menu-wrapper">
+  <button id="menu-toggle-btn" class="menu-btn" aria-label="Abrir menú">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+  <div id="menu-dropdown" class="dropdown-content">
+    <slot />
+  </div>
+</div>
 
 <style>
-  .menu-btn {
-    background-color: #0d0950;
-    border: none;
-    color: #fff;
-    font-size: 2rem;
-    font-weight: bold;
-    padding: 9px 15px;
-    cursor: pointer;
-  }
-  
-  .menu-btn:hover {
-    opacity: 0.7;
+  .menu-wrapper {
+    position: relative;
+    display: inline-block;
   }
 
-  /* Ocultar el botón en pantallas grandes */
-  @media screen and (min-width: 636px) {
-    .menu-btn {
-      display: none;
-    }
+  .menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    padding: 0.5rem;
+    z-index: 100;
+  }
+
+  /* Clase que activa la apertura desde el script */
+  .dropdown-content.is-open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Asegurar colores adaptados si está en modo oscuro */
+  :global(html.dark) .dropdown-content {
+    background-color: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 </style>
 
 <script>
-  const menuBtn = document.getElementById('menu-btn');
-  const menuContent = document.getElementById('menu-content');
+  function setupMenu() {
+    const btn = document.getElementById('menu-toggle-btn');
+    const dropdown = document.getElementById('menu-dropdown');
 
-  menuBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    menuContent?.classList.toggle('show');
-  });
+    if (btn && dropdown) {
+      // Usar 'click' con prevención de propagación
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('is-open');
+      };
 
-  // Cerrar el menú si se hace clic fuera de él
-  window.addEventListener('click', () => {
-    if (menuContent?.classList.contains('show')) {
-      menuContent.classList.remove('show');
+      // Cerrar al hacer clic fuera
+      window.onclick = () => {
+        if (dropdown.classList.contains('is-open')) {
+          dropdown.classList.remove('is-open');
+        }
+      };
     }
-  });
+  }
+
+  // Ejecutar al cargar y tras transiciones de páginas en Astro
+  setupMenu();
+  document.addEventListener('astro:page-load', setupMenu);
 </script>
