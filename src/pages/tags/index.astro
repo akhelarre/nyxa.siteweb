@@ -2,35 +2,56 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
-const tags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
-const pageTitle = "Tag Index";
+const tags = [...new Set(allPosts.flatMap((post: any) => post.frontmatter.tags || []))].sort();
+const pageTitle = "TAGS // INDEX";
 ---
-<BaseLayout>
-    <style>
-  a {
-    color: #00539F;
+
+<BaseLayout pageTitle={pageTitle}>
+  <h1>ÍNDICE DE ETIQUETAS</h1>
+  <p>Nodos semánticos y clasificación de archivos del sistema.</p>
+
+  <div class="tags-matrix">
+    {tags.map((tag) => {
+      const count = allPosts.filter((post: any) => (post.frontmatter.tags || []).includes(tag)).length;
+      return (
+        <a class="tag-cell" href={`/tags/${tag}`}>
+          <span class="tag-name">#{tag}</span>
+          <span class="tag-count">[{count}]</span>
+        </a>
+      );
+    })}
+  </div>
+</BaseLayout>
+
+<style>
+  .tags-matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.5rem;
   }
 
-  .tags {
+  .tag-cell {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-line);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--fg-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
   }
 
-  .tag {
-    margin: 0.25em;
-    border: dotted 1px #a1a1a1;
-    border-radius: .5em;
-    padding: .5em 1em;
-    font-size: 1.15em;
-    background-color: #F8FCFD;
+  .tag-cell:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .tag-count {
+    font-size: 0.75rem;
+    color: var(--accent);
   }
 </style>
-    <div class="tags">
-        {tags.map((tag) => (
-            <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
-        ))}
-    </div>
-    <ul>
-        {tags.map((tag) => <li>{tag}</li>)}
-    </ul>
-</BaseLayout>

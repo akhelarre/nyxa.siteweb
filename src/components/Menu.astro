@@ -11,47 +11,51 @@
   </div>
 </div>
 
+/* Estilos Locales Menu.astro */
 <style>
-  .menu-wrapper {
-    position: relative;
-    display: inline-block;
-  }
 
-  .menu-toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 200px;
-    background-color: #fce7f3;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 6px;
-    padding: 0.75rem;
-    z-index: 100;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
+	/* Estilos para el menú desplegable */
+	.menu-wrapper {
+	position: relative;
+	display: inline-block;
+	}
 
-  /* Clase que activa la apertura usando clases en lugar de IDs */
-  .menu-wrapper.is-open .dropdown-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+	.menu-toggle-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	}
 
-  :global(html.dark) .dropdown-content {
-    background-color: #1a0b14;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
+	.dropdown-content {
+	display: none;
+	position: absolute;
+	top: 100%;
+	right: 0;
+	min-width: 200px;
+	background-color: #fce7f3;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	border-radius: 6px;
+	padding: 0.75rem;
+	z-index: 100;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	}
+
+	/* Clase que activa la apertura usando clases en lugar de IDs */
+	.menu-wrapper.is-open .dropdown-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	}
+
+	:global(html.dark) .dropdown-content {
+	background-color: #1a0b14;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	}
 </style>
 
 <script>

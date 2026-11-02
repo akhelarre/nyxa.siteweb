@@ -1,85 +1,44 @@
 ---
-import Menu from './Menu.astro';
-import Navigation from './Navigation.astro';
 import ThemeIcon from './ThemeIcon.astro';
 ---
 
-<header class="site-header">
-  <div class="header-container">
-    <nav class="nav-wrapper">
-      <div class="top-row">
-        <ThemeIcon />
-        <!-- Menú desplegable exclusivo para móviles -->
-        <div class="mobile-menu">
-          <Menu>
-            <Navigation />
-          </Menu>
-        </div>
-      </div>
-      <!-- Navegación normal exclusiva para PC -->
-      <div class="desktop-navigation">
-        <Navigation />
-      </div>
-    </nav>
+<header class="cell-header">
+  <div class="brand-bar">
+    <a href="/" class="sys-id">SYS.33 // DISEÑADORA VIRTUAL</a>
+    <div class="header-controls">
+      <ThemeIcon />
+      <button type="button" class="menu-toggle" aria-expanded="false" aria-label="Alternar menú">
+        [MENU]
+      </button>
+    </div>
   </div>
+
+  <nav class="nav-matrix" id="nav-matrix">
+    <a href="/">/INDEX</a>
+    <a href="/blog/">/BLOG_ARCHIVE</a>
+    <a href="/about/">/MANIFESTO</a>
+    <a href="/wiki/">/ARS_ARKA</a>
+    <a href="/tags/">/TAGS</a>
+  </nav>
 </header>
-</header>
 
-<style>
-  .site-header {
-    width: 100%;
-    padding: 1.5rem 1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
+<script>
+  const toggleBtn = document.querySelector('.menu-toggle');
+  const navMatrix = document.getElementById('nav-matrix');
 
-  .header-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
+  toggleBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+    toggleBtn.setAttribute('aria-expanded', String(!isExpanded));
+    toggleBtn.textContent = !isExpanded ? '[CLOSE]' : '[MENU]';
+    navMatrix?.classList.toggle('is-open');
+  });
 
-  .nav-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Control de visibilidad según el dispositivo */
-  .mobile-menu {
-    display: block;
-  }
-
-  .desktop-navigation {
-    display: none;
-  }
-
-  @media (min-width: 768px) {
-    .mobile-menu {
-      display: none;
+  document.addEventListener('click', (e) => {
+    if (!navMatrix?.contains(e.target as Node)) {
+      navMatrix?.classList.remove('is-open');
+      toggleBtn?.setAttribute('aria-expanded', 'false');
+      if (toggleBtn) toggleBtn.textContent = '[MENU]';
     }
-    
-    .desktop-navigation {
-      display: block;
-    }
-  }
-
-  :global(html.dark) .site-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  /* Forzar el color de los enlaces de navegación en modo oscuro */
-  :global(html.dark) :global(.nav-links a),
-  :global(html.dark) nav a {
-    color: #f3f4f6 !important;
-  }
-
-  :global(html.dark) :global(.nav-links a:hover),
-  :global(html.dark) nav a:hover {
-    color: #ff9776 !important;
-  }
-</style>
+  });
+</script>

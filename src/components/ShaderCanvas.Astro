@@ -1,0 +1,132 @@
+<canvas id="gl-viewport" aria-hidden="true"></canvas>
+
+<style>
+  #gl-viewport {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    display: block;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('gl-viewport') as HTMLCanvasElement | null;
+  const gl = canvas?.getContext('webgl');
+
+  if (canvas && gl) {
+    const vsSource = `
+      attribute vec2 position;
+      void main() {
+        gl_Position = vec4(position, 0.0, 1.0);
+      }
+    `;
+
+    const fsSource = `
+      precision mediump float;
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+      uniform float u_dark;
+
+      void main() {
+        // Aspect-corrected coordinates for 1:1 square geometry
+        float minDim = min(u_resolution.x, u_resolution.y);
+        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+        vec2 squareUv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / minDim;
+        vec2 mouseUv = (u_mouse - 0.5 * u_resolution.xy) / minDim;
+
+        // Distance from pointer for subtle spatial distortion
+        float dist = length(squareUv - mouseUv);
+        float ripple = sin(dist * 18.0 - u_time * 1.5) * exp(-dist * 3.5) * 0.015;
+
+        // Primary and secondary Bauhaus geometric grids
+        vec2 majorGrid = fract((squareUv + ripple) * 8.0);
+        vec2 minorGrid = fract((squareUv + ripple) * 32.0);
+        float majorLine = step(0.96, max(majorGrid.x, majorGrid.y));
+        float minorLine = step(0.95, max(minorGrid.x, minorGrid.y)) * 0.35;
+        float gridMask = clamp(majorLine + minorLine, 0.0, 1.0);
+
+        // Interference wave
+        float wave = 0.03 * sin(uv.x * 10.0 + u_time * 0.5) * cos(uv.y * 10.0 - u_time * 0.4);
+
+        // Light mode palette (#fce7f3 base, #1e1b4b lines)
+        vec3 lightBase = vec3(0.988, 0.906, 0.953) + wave;
+        vec3 lightGrid = vec3(0.118, 0.106, 0.294);
+        vec3 lightFinal = mix(lightBase, lightGrid, gridMask * 0.14);
+
+        // Dark mode palette (#1a0b14 base, #fbcfe8 / #ff9776 lines)
+        vec3 darkBase = vec3(0.065, 0.027, 0.051) + wave;
+        vec3 darkGrid = vec3(0.32, 0.16, 0.25);
+        vec3 darkFinal = mix(darkBase, darkGrid, gridMask * 0.4);
+
+        gl_FragColor = vec4(mix(lightFinal, darkFinal, u_dark), 1.0);
+      }
+    `;
+
+    const compileShader = (type: number, source: string) => {
+      const shader = gl.createShader(type)!;
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      return shader;
+    };
+
+    const program = gl.createProgram()!;
+    gl.attachShader(program, compileShader(gl.VERTEX_SHADER, vsSource));
+    gl.attachShader(program, compileShader(gl.FRAGMENT_SHADER, fsSource));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+
+    const posAttrib = gl.getAttribLocation(program, 'position');
+    gl.enableVertexAttribArray(posAttrib);
+    gl.vertexAttribPointer(posAttrib, 2, gl.FLOAT, false, 0, 0);
+
+    const resLoc = gl.getUniformLocation(program, 'u_resolution');
+    const mouseLoc = gl.getUniformLocation(program, 'u_mouse');
+    const timeLoc = gl.getUniformLocation(program, 'u_time');
+    const darkLoc = gl.getUniformLocation(program, 'u_dark');
+
+    let mouseX = window.innerWidth * 0.5;
+    let mouseY = window.innerHeight * 0.5;
+    let currentDark = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
+
+    window.addEventListener('pointermove', (e) => {
+      mouseX = e.clientX;
+      mouseY = window.innerHeight - e.clientY;
+    });
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
+    window.addEventListener('resize', resize);
+    resize();
+
+    const render = (time: number) => {
+      const targetDark = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
+      currentDark += (targetDark - currentDark) * 0.08;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      gl.uniform2f(resLoc, canvas.width, canvas.height);
+      gl.uniform2f(mouseLoc, mouseX * dpr, mouseY * dpr);
+      gl.uniform1f(timeLoc, time * 0.001);
+      gl.uniform1f(darkLoc, currentDark);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      requestAnimationFrame(render);
+    };
+    requestAnimationFrame(render);
+  }
+</script>

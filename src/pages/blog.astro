@@ -2,13 +2,21 @@
 import BlogLayout from '../layouts/BlogLayout.astro';
 import BlogPost from '../components/BlogPost.astro';
 
-// Carga de post usando método meta.glob
 const allPosts: any[] = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
-// Ordenados los post de más reciente al más antiguo 
-allPosts.sort((a, b) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf());const pageTitle = "Blog";
+allPosts.sort((a, b) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf());
+const pageTitle = "BLOG_ARCHIVE";
 ---
 
 <BlogLayout pageTitle={pageTitle}>
   <ul>
-    {allPosts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title} />)}  </ul>
+    {allPosts.map((post: any) => (
+      <BlogPost
+        url={post.url}
+        title={post.frontmatter.title}
+        description={post.frontmatter.description}
+        pubDate={post.frontmatter.pubDate}
+        image={post.frontmatter.image}
+      />
+    ))}
+  </ul>
 </BlogLayout>

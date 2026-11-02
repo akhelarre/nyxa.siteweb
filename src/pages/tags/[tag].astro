@@ -4,11 +4,13 @@ import BlogPost from '../../components/BlogPost.astro';
 
 export async function getStaticPaths() {
   const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
-
-  const uniqueTags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
+  const uniqueTags = [...new Set(allPosts.flatMap((post: any) => post.frontmatter.tags || []))];
 
   return uniqueTags.map((tag) => {
-    const filteredPosts = allPosts.filter((post: any) => post.frontmatter.tags.includes(tag));
+    const filteredPosts = allPosts
+      .filter((post: any) => (post.frontmatter.tags || []).includes(tag))
+      .sort((a: any, b: any) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf());
+
     return {
       params: { tag },
       props: { posts: filteredPosts },
@@ -19,9 +21,36 @@ export async function getStaticPaths() {
 const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
-<BaseLayout pageTitle={tag}>
-  <p>Posts tagged with {tag}</p>
-  <ul>
-    {posts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
+
+<BaseLayout pageTitle={`TAG // #${tag}`}>
+  <header class="tag-header">
+    <h1>NODO: #{tag}</h1>
+    <p>Archivos indexados bajo la etiqueta <strong>{tag}</strong> ({posts.length}) — <a href="/tags/">[VER TODOS LOS TAGS]</a></p>
+  </header>
+
+  <ul class="tag-post-list">
+    {posts.map((post: any) => (
+      <BlogPost
+        url={post.url}
+        title={post.frontmatter.title}
+        description={post.frontmatter.description}
+        pubDate={post.frontmatter.pubDate}
+        image={post.frontmatter.image}
+      />
+    ))}
   </ul>
 </BaseLayout>
+
+<style>
+  .tag-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-line);
+  }
+
+  .tag-post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>

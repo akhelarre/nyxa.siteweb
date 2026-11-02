@@ -1,9 +1,19 @@
 ---
-const { title, url } = Astro.props;
+const { title, url, description, pubDate, image } = Astro.props;
+const formattedDate = pubDate ? new Date(pubDate).toISOString().split('T')[0] : '';
 ---
 
-<li>
-  <a href={url}>{title}</a>
+<li class="post-card">
+  <div class="post-info">
+    {formattedDate && <div class="post-meta">{formattedDate}</div>}
+    <h3><a href={url}>{title}</a></h3>
+    {description && <p class="post-desc">{description}</p>}
+  </div>
+  {image?.url && (
+    <div class="post-thumb">
+      <img src={image.url} alt={image.alt || title} loading="lazy" />
+    </div>
+  )}
 </li>
 
 <style>
@@ -12,8 +22,10 @@ const { title, url } = Astro.props;
     justify-content: space-between;
     align-items: center;
     gap: 1.5rem;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid #2a2a2a;
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border-line);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .post-info {
@@ -22,31 +34,45 @@ const { title, url } = Astro.props;
 
   .post-card h3 {
     font-size: 1.25rem;
-    margin: 0 0 0.5rem 0;
+    margin: 0.25rem 0 0.5rem 0;
   }
 
   .post-card h3 a {
-    color: #ffffff;
+    color: var(--fg-primary); /* Hereda el color principal de los títulos */
+    text-decoration: none;
+  }
+
+  .post-card h3 a:hover {
+    color: var(--accent); /* Cambia al color de acento al pasar el cursor */
   }
 
   .post-desc {
     font-size: 0.95rem;
-    color: #999999;
-    margin: 0 0 0.75rem 0;
+    color: var(--fg-muted); /* Hereda el color de texto secundario */
   }
 
   .post-meta {
-    font-size: 0.8rem;
-    color: #777777;
+    font-size: 0.75rem;
+    color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .post-thumb img {
-    width: 160px;
-    height: 100px;
+    width: 140px;
+    height: 90px;
     object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-line);
+  }
+
+  @media (max-width: 600px) {
+    .post-card {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+    }
+    .post-thumb, .post-thumb img {
+      width: 100%;
+      height: 160px;
+    }
   }
 </style>

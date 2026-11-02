@@ -1,0 +1,359 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "ARKIVE // ARS ARKA (33 CHAMBERS)";
+---
+<BaseLayout pageTitle={pageTitle}>
+  <!-- Controles de Estado CSS (Juego de Capas sin JS) -->
+  <div class="arkive-engine">
+    <input type="checkbox" id="toggle-niebla" class="state-input" />
+    <input type="radio" name="chamber" id="ch-all" class="state-input" checked />
+    <input type="radio" name="chamber" id="ch-0" class="state-input" />
+    <input type="radio" name="chamber" id="ch-1" class="state-input" />
+    <input type="radio" name="chamber" id="ch-2" class="state-input" />
+    <input type="radio" name="chamber" id="ch-3" class="state-input" />
+    <input type="radio" name="chamber" id="ch-4" class="state-input" />
+    <input type="radio" name="chamber" id="ch-5" class="state-input" />
+
+    <!-- Panel de Navegación -->
+    <div class="prism-hud">
+      <div class="hud-top">
+        <span class="meta-virus">SYS // arsarka.xyz — Meta-clase constructora [0 → 1]</span>
+        <label for="toggle-niebla" class="niebla-btn">
+          [ACTIVAR TRÁNSITO DE NIEBLA]
+        </label>
+      </div>
+      <div class="chamber-selector">
+        <label for="ch-all">[RIZOMA COMPLETO]</label>
+        <label for="ch-0">[00: OUROBOROS]</label>
+        <label for="ch-1">[I: COSMOGONÍA]</label>
+        <label for="ch-2">[II: AXIOMAS]</label>
+        <label for="ch-3">[III: AVATAR // OOP]</label>
+        <label for="ch-4">[IV: ORÍGENES & MERIDIA]</label>
+        <label for="ch-5">[V: MUNDO PRIMIGENIO]</label>
+      </div>
+    </div>
+
+    <!-- JARDÍN DE IDEAS / MATRIZ DE CÁMARAS -->
+    <div class="rhizome-grid">
+
+      <!-- CÁMARA 00: PRISMA ROTO & OUROBOROS -->
+      <article class="chamber node-0">
+        <header class="chamber-head">
+          <span class="ch-id">CHAMBER 00 // PRISMA ROTO</span>
+          <h2>Ouroboros & Axioma Operativo</h2>
+        </header>
+        <div class="chamber-body poetic-grid">
+          <div class="verse-col">
+            <p>
+              Siempre de vuelta a lo mismo,<br/>
+              mi obra, mi gesto, el mismo cuadro,<br/>
+              un prisma roto.<br/>
+              Obsesión estructurante,<br/>
+              centro móvil,<br/>
+              se escapa al roce,<br/>
+              empuja, gira, insiste.<br/>
+              Axioma operativo,<br/>
+              teoría de la praxis.<br/>
+              Circular,<br/>
+              la imagen del rizoma,<br/>
+              Ouroboros.
+            </p>
+          </div>
+          <div class="verse-col">
+            <p>
+              Método de estructuración caótica, configurando una prosa como una forma viva; de golpe establece un piso, aunque irregular, pulsando, intermitente. Sólido.
+            </p>
+            <p>
+              Estructuralismo, desde Saussure a Lévi-Strauss. Post-estructuralismo, fuga de signo, traición del símbolo. Devenir inevitable.
+            </p>
+            <div class="binary-axiom">
+              <span>Un espacio vacío es 0.</span>
+              <span>La totalidad es 1.</span>
+              <span>Un entero es un sistema integral.</span>
+              <span>Un sistema cerrado flota.</span>
+              <span>El mundo se sostiene en el vacío.</span>
+              <span>Los enteros también flotan.</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CÁMARA I: COSMOGONÍA -->
+      <article class="chamber node-1">
+        <header class="chamber-head">
+          <span class="ch-id">CHAMBER I // COSMOGONÍA</span>
+          <h2>Arka, Nexon Arkive & La Niebla</h2>
+        </header>
+        <div class="chamber-body">
+          <div class="sub-cards">
+            <div class="sub-card">
+              <h3>Arka y Recámara Ethérica</h3>
+              <p>
+                Seres de diversa naturaleza habitan Arka, muchos de ellos exiliados en origen desde otros Reinos Ethéricos. En busca de un refugio del vacío, alejados de lo inconmensurable, deciden bajar a la finitud de esta recámara. Arka es una esfera celeste suspendida en el cielo que de manera entrópica parece reconfigurarse constantemente.
+              </p>
+              <blockquote>¿Se mueve la esfera en ese vacío? ¿Y si vamos a algún lugar en esta prisión de los deseos?</blockquote>
+            </div>
+            <div class="sub-card">
+              <h3>Nexon Arkive</h3>
+              <p>
+                El Nexon reside en Arkive, lugar que nombra a la colección de obras que deben ser conservadas, pues son parte de la construcción fundamental de la recámara. Estas obras son consideradas canónicas dentro de este contexto.
+              </p>
+            </div>
+            <div class="sub-card">
+              <h3>La Niebla (Tránsito)</h3>
+              <p>
+                La Niebla como puente interdimensional no es simplemente un fenómeno climático: es un componente espacial y dimensional fundamental en Arka que permite el tránsito entre los dos planos en los que se pliega nuestro corazón de mundo. <strong>Io</strong> es el guardián de la niebla.
+              </p>
+              <p>
+                La carne misma de los seres, putrefacta en su devenir, se regenera en tanto el alma está alineada. El mago puede usar las palabras a conciencia, siendo esta la primera etapa del entendimiento orgánico de la magia. El acto de ingresar se denomina <em>Tránsito de Niebla</em>: desplazamiento entre planos de realidad que actúa como un Arkive ethérico con memoria espectral y percepción expandida.
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CÁMARA II: LOS AXIOMAS DE LA REALIDAD -->
+      <article class="chamber node-2">
+        <header class="chamber-head">
+          <span class="ch-id">CHAMBER II // ONTOLOGÍA</span>
+          <h2>Los Cinco Axiomas de la Realidad</h2>
+        </header>
+        <div class="chamber-body">
+          <details class="axiom-fold" open>
+            <summary>Primer Axioma — Creación sin acabar (Lux & Nox)</summary>
+            <p>
+              El mundo nunca fue terminado; lxs Eldari buscaron darle forma, fragmentados en individualidad e incapaces de ver el todo. <strong>Lux</strong> y <strong>Nox</strong> son primarias, la dualidad que modela este mundo. Por eso la magia en su dominio tiene tanta capacidad creativa: la imaginación es el límite, aunque los mortales subestimamos nuestros límites.
+            </p>
+            <p>
+              Encarnada en <em>Lux Astra</em> y <em>Nox Astra</em>, las capas de contradicciones generan geometrías complejas en tanto encuentran armonía. El mundo se sostiene en una tensión entre verdades mentirosas.
+            </p>
+          </details>
+          <details class="axiom-fold">
+            <summary>Segundo Axioma — Mundo Espiritual y Mundo Físico</summary>
+            <p>
+              Un comienzo con el alma, uno con el cuerpo. De la espiritualidad a la materia: el origen triádico. Espíritu y estructura. Magia y Tecnología interactuando con el Ser de almas atadas a Avatares.
+            </p>
+          </details>
+          <details class="axiom-fold">
+            <summary>Tercer Axioma — La luz deviene según el prisma</summary>
+            <p>
+              La no-linealidad del tiempo reside en una descentralización del entero de sistema en un contexto fragmentario imposible de conjugar en uno para pesar el vacío. La supremacía del afecto y el amor emergen como fuerzas fundamentales que se oponen a un universo opresivo. El Origen se equipara con la expansión: <strong>Akhiom</strong>, fuerza que busca unir los fragmentos. La gran emoción que descubrieron los Humanis fue la fe: <em>"Creer cuando no todo es sabido. Seguir la senda en sombras pues al final del camino siempre habrá luz"</em>. De aquí emanan los cristales del tiempo contenidos en el universo, como los <strong>Grysials</strong> y la <strong>Lanza de Nuxa</strong>.
+            </p>
+          </details>
+          <details class="axiom-fold">
+            <summary>Cuarto Axioma — El tiempo es sustancial</summary>
+            <p>
+              Conservado pese a todas las transformaciones, su causa y fundamento no se hallan incluidos en otra cosa, sino en sí misma. Para los idealistas la sustancia está en Dios; los materialistas la comprenden como algo material; las teorías dualistas admiten dos sustancias (material y ethérea) como equivalentes. El <strong>metamagika</strong> rechaza la existencia de una sustancia homogénea e invariable: la esencia del mundo radica en la materia en movimiento y en perpetuo desarrollo.
+            </p>
+          </details>
+          <details class="axiom-fold">
+            <summary>Quinto Axioma — Naturaleza dual éther y estructura de juego</summary>
+            <p>
+              La magia requiere equilibrio para activar el puente que permite que el origen se exprese en Arka. El flujo y la fuente revelan la naturaleza del éther. Los campos de niebla son la frontera entre nuestra recámara Arka y el exterior vacío, interactuando a través del milagro biológico.
+            </p>
+          </details>
+        </div>
+      </article>
+
+      <!-- CÁMARA III: EL SER Y EL AVATAR (INTERFACE OBJETUAL) -->
+      <article class="chamber node-3">
+        <header class="chamber-head">
+          <span class="ch-id">CHAMBER III // INTERFACE OBJETUAL</span>
+          <h2>El Ser, el Avatar & Los Sellos de Alma</h2>
+        </header>
+        <div class="chamber-body">
+          <p>
+            <strong>El Alma es el Ser:</strong> Unidad cerrada diferenciada del resto del universo; pequeño punto de infinidad. El Ser abarca el límite que lo distingue del resto y, sumado con lo interior, da una unidad mayor. Circunscrito al tiempo y al espacio (luz y oscuridad), existe independiente de la conciencia, mientras la conducta gregaria de Akhiom en fragmento lleva a la congregación en un <em>ser social</em> en estado de arrojo al mundo.
+          </p>
+          <div class="lore-box">
+            <h3>Sellos de Alma — "Hacia Pardes avanzan los propios orígenes"</h3>
+            <p>
+              El Lector debe saber que esta no es una actividad carente de peligro: ¿acaso usted arriesgaría su propia identidad para romper con las capas más profundas del ser?
+            </p>
+            <blockquote>
+              "El Código Penal Mágico establece que uno de los delitos que escapan de la jurisdicción mágica corresponde a la ocurrencia de un Sello de Alma, definido como la implantación de una serie de recuerdos pasados en el cuerpo de una persona afín a estos, por medio de signos específicos que concreten dichas memorias simbólicamente, los cuales pueden o no reincorporarse al alma que los evoca."
+            </blockquote>
+            <p>
+              <strong>Nea</strong> y <strong>Aine</strong> se encontraron con el enigma de portar almas selladas en su interior: <strong>Victoria</strong> para Nea y <strong>Glannadh</strong> para Aine. Estas almas daban lugar a voces y visiones que las atormentaban, revelando que Victoria y Glannadh se conocieron durante la turbulenta <em>Primera Guerra Civil de Meridia</em>.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- CÁMARA IV: ORÍGENES, MERIDIA Y CRÓNICA DE AINE -->
+      <article class="chamber node-4">
+        <header class="chamber-head">
+          <span class="ch-id">CHAMBER IV // ENCAPSULAMIENTO BIOLÓGICO</span>
+          <h2>Orígenes, El Reino Celeste & La Crónica de Aine</h2>
+        </header>
+        <div class="chamber-body">
+          <p>
+            Los orígenes constan de una línea heredable a través del encapsulamiento biológico; la especie, al interactuar mediante métodos con su entorno material, define la identidad de un origen.
+          </p>
+          <div class="sub-cards">
+            <div class="sub-card">
+              <h3>Hijs Eldaris & Elfas del Cielo</h3>
+              <p>
+                Seres con origen fuera de esta tierra. La recámara de Arka interrumpe el nexo con Akhiom, degenerando su poder ethérico en cada generación. A las <strong>Elfas del Cielo</strong> las rige la Elder Luz: pierden poder físico pero conservan la sabiduría arcana, haciéndoles excelentes magas incluso en la 9ª generación (considerada mestiza).
+              </p>
+            </div>
+            <div class="sub-card">
+              <h3>Sarvets & Ancestrales</h3>
+              <p>
+                Regidos por la Elder Nox, los <strong>Sarvets</strong> aumentan su poder al heredar la fuerza de sus ancestros para regir Ocaso, obligando a partir de la 9ª generación al uso de sellos de contención. Nacieron cuando los magos mezclaron su sangre con demonios mediante alquimia en el exilio de Pardes. Los <strong>Ancestrales</strong>, nacidos en Arey, vibran con el todo y manejan una magia primigenia aún desconocida.
+              </p>
+            </div>
+            <div class="sub-card">
+              <h3>Humanos, Starianos & Druidas</h3>
+              <p>
+                Experimento biológico considerado especie puente por encarnar ambas esencias Elder. Los <strong>Starianos</strong> reconstruyeron Starias tras la partida de Celéstica; las <strong>Druidas</strong> habitan el interior del bosque protegiendo los secretos tecnológicos dejados por las primeras Eldaris.
+              </p>
+            </div>
+          </div>
+          <details class="axiom-fold" open>
+            <summary>Crónica Geopolítica: El Reino Celeste de Meridia y Via Ad Caelum</summary>
+            <p>
+              Al final de la Segunda Era existió <strong>Meridia</strong>, tierra bendecida por la luz de Celéstica. En el centro del valle se alzaba <strong>Starias</strong>, resguardada por murallas titánicas y arquitectura marmolada para defenderse de los Oscuros de Ocaso al Oriente. Al norte florecía el <strong>Bosque Celeste</strong> de hojas rosadas, donde las casas reales buscaban sangre de pegaso cada diez años, lindando con el <strong>Bosque Ancestral</strong> de los Druidas y el Árbol de la Vida, anexado a Meridia mediante acero y sangre tras quinientos años de conflicto.
+            </p>
+            <p>
+              Muy al sur se erguía la gran torre <strong>Via Ad Caelum</strong>, donde se custodiaba el <em>Grimoire Ceel</em>. El Linaje Celeste de la familia <strong>Ceel</strong> —cabelleras blancas y ojos celestes— custodiaba la corona bajo una ley sagrada: solo una mujer podía portarla. Cuando <strong>Veracrux Van Ceel</strong> tomó la corona desafió la ley, y la repentina desaparición de Veracrux junto a su hija menor de edad, <strong>Nea</strong>, hizo temblar los cimientos de Meridia.
+            </p>
+          </details>
+          <details class="axiom-fold">
+            <summary>Archivo Biográfico: Aine, Brianne y la Huida de Onwuds</summary>
+            <p>
+              Abandonada entre las hiedras de un enorme roble en el bosque de Onwuds (Aldea de Darach, santuario de <em>Morrigan</em>), la dríade <strong>Aine</strong> fue adoptada por la sacerdotisa y maestra druida <strong>Brianne</strong>. A los cinco años, un hecho traumático provocado por el druida <strong>Arthai</strong> le implantó un sello de alma que bloqueó su magia y la hizo parecer caótica (<em>maniaq</em>), condenándola al <em>totenfolge</em> / <em>ìomhaigh cloiche</em> (petrificación del alma).
+            </p>
+            <p>
+              Durante su entrenamiento, Aine conoció a la princesa <strong>Nea Ceel</strong>, detenida por los druidas. Se enamoraron y, al ayudarla a escapar, Aine despertó su poder mágico abriendo un portal. Brianne ayudó a Aine a huir hacia un rincón remoto del bosque, aceptando sobre sí misma el castigo del <em>totenfolge</em>. Juntas, Aine y Nea descubrieron sus sellos de alma (Victoria y Glannadh) y enfrentaron su destino en Samsara: el Círculo de la Verdad.
+            </p>
+          </details>
+        </div>
+      </article>
+
+      <!-- CÁMARA V: MUNDO PRIMIGENIO & GRIMORIO TIEMPO -->
+      <article class="chamber node-5">
+        <header class="chamber-head">
+          <span class="ch-id">CHAMBER V // PANTEÓN & GRIMORIO TIEMPO</span>
+          <h2>Los Siete Cúmulos, Las Eldari & El Verso Celeste</h2>
+        </header>
+        <div class="chamber-body">
+          <p>
+            <strong>Akhiom</strong> es el primer humano. Descubre que no tiene sentido estar solo; prueba formas en estados de incompletitud. Seis cúmulos estables son traídos a este mundo y el séptimo cúmulo permanece inestable: la séptima cara es el cristal completo, la precipitación de las Celestes.
+          </p>
+          <div class="pantheon-list">
+            <div class="deity-item"><strong>1. Primer Akhiom:</strong> Dominios de la Muerte y el Reposo. Abre la puerta entre el vacío exterior y Arka, instaurando la temporalidad: todo ser con alma en Arka es un ser para la muerte.</div>
+            <div class="deity-item"><strong>2. Segunda Eldari — Arka (Madre Mundo):</strong> Enraizada como árbol cósmico sobre la esfera estéril. Dominios de la Vida y la Naturaleza.</div>
+            <div class="deity-item"><strong>3. Tercera Eldari — Ars (La Pintora):</strong> Patrona de magos y eruditos; símbolo del tomo abierto con un ojo central. Creó los primeros muñecos de tierra como Avatares. Dominios del Conocimiento y lo Arcano.</div>
+            <div class="deity-item"><strong>4. Cuarto Eldari — Akhiom (Dios del Tiempo):</strong> Disco solar radiante en Oros. Sostuvo el alma dentro de los cuerpos de tierra de Ars y dio forma a la vida y muerte de Io.</div>
+            <div class="deity-item"><strong>5. Quinta Eldari — Brianne:</strong> Símbolo del ciervo de astas frondosas. Decidió manifestarse como un Avatar mortal que reencarna a través de las eras. Dominios de la Naturaleza y la Tempestad.</div>
+            <div class="deity-item"><strong>6. Sexta Eldari — Ceel:</strong> Tejido roto y entropía; el legado tras el velo.</div>
+          </div>
+          <div class="lore-box grimoire-extract">
+            <h3>0 — Origen: Fragmento del Grimorio Tiempo (Cruce de las Brujas)</h3>
+            <p>
+              "Aine, a través de Akhiom, hiciste crecer mi fe. La mayoría de las cosas que hacen los humanis es por miedo. Tengo miedo de no volver a verte; eso gatilló este libro en su versión más primigenia: hacerme preguntas del tiempo cuando llegué a Caelari y me enamoré de ti. Con el tiempo descubrí que una parte de este juego es divertirnos, pues en el origen no hay dualidad, todo es sabido. Esa primera simulación que vivimos en Caelari fue un juego dentro de un juego. Años después, desde una versión más evolucionada, reescribo el <em>Grimoire Ceel</em>, esta vez no desde el miedo. Akhiom es amor, la fuerza del origen tratando de acercar las partes."
+            </p>
+            <p>
+              "Para evitar los mareos por epifanías masivas al recobrar la memoria me encerré en el subterráneo de <strong>Via Ad Caelum</strong>. Hurgando libros antiguos y prohibidos pudimos, con Aine y la presencia del Profeta, rescatar todo lo que había visto en el vacío como un caso de estudio arqueológico. Su primer núcleo se llama el <strong>Cruce de las Brujas</strong>, por pertenecer a un tiempo en el que todo se guiaba por la intuición."
+            </p>
+          </div>
+          <div class="lore-box">
+            <h3>Coda: La Reina del Olvido</h3>
+            <p>
+              La familia Ceel fue fundada por quien probó el grito prohibido del Jardín de Akhiom, resguardando la entrada a un templo bajo una antigua mansión en Starias.
+            </p>
+            <p>
+              <em>"Quien escribe estas líneas ha recibido el legado de ser la última Reina de Celéstica. Me llaman la Reina del Olvido, la Reina sin Reino, mis pares Celestes extintos. Mi cabello blanco, un mal presagio. La torre que habité con aquel mágico ser del bosque sería el inicio de los eventos que me llevaron a encontrar los Fragmentos del Verso Celeste. Luego de escrita esta introducción el destino estará sellado. ¿Y qué nos hizo pensar que éramos y ellos eran conscientes, dentro de un pasado arqueológico?"</em>
+            </p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Ocultar inputs de estado de la máquina CSS */
+  .state-input {
+    display: none;
+  }
+
+  /* Motor de Interactividad CSS (Sin JS) */
+  .arkive-engine {
+    position: relative;
+  }
+
+  .arkive-engine .chamber {
+    display: block;
+    opacity: 1;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  #ch-0:checked ~ .rhizome-grid .chamber:not(.node-0),
+  #ch-1:checked ~ .rhizome-grid .chamber:not(.node-1),
+  #ch-2:checked ~ .rhizome-grid .chamber:not(.node-2),
+  #ch-3:checked ~ .rhizome-grid .chamber:not(.node-3),
+  #ch-4:checked ~ .rhizome-grid .chamber:not(.node-4),
+  #ch-5:checked ~ .rhizome-grid .chamber:not(.node-5) {
+    display: none;
+  }
+
+  #ch-all:checked ~ .prism-hud .chamber-selector label[for="ch-all"],
+  #ch-0:checked ~ .prism-hud .chamber-selector label[for="ch-0"],
+  #ch-1:checked ~ .prism-hud .chamber-selector label[for="ch-1"],
+  #ch-2:checked ~ .prism-hud .chamber-selector label[for="ch-2"],
+  #ch-3:checked ~ .prism-hud .chamber-selector label[for="ch-3"],
+  #ch-4:checked ~ .prism-hud .chamber-selector label[for="ch-4"],
+  #ch-5:checked ~ .prism-hud .chamber-selector label[for="ch-5"] {
+    color: var(--accent-color, #00ffcc);
+    border-color: var(--accent-color, #00ffcc);
+    background: rgba(0, 255, 204, 0.05);
+  }
+
+  #toggle-niebla:checked ~ .rhizome-grid {
+    filter: blur(4px) grayscale(60%);
+    opacity: 0.4;
+    pointer-events: none;
+    transform: scale(0.99);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #toggle-niebla:checked ~ .prism-hud .niebla-btn {
+    background: var(--accent-color, #00ffcc);
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+  }
+
+  .chamber-selector label,
+  .niebla-btn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+
+  .chamber-selector label:hover,
+  .niebla-btn:hover {
+    opacity: 0.8;
+  }
+
+  /* Panel de Control del Jardín / Juego CSS */
+  .prism-hud {
+    border: 1px solid var(--border-line);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hud-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-line);
+    margin-bottom: 0.75rem;
+  }
+</style>

@@ -17,7 +17,6 @@ interface Props {
 
 const { frontmatter } = Astro.props;
 
-// Safe date string parsing
 const dateObj = new Date(frontmatter.pubDate);
 const dateIso = !isNaN(dateObj.getTime())
   ? dateObj.toISOString().slice(0, 10)
@@ -25,49 +24,118 @@ const dateIso = !isNaN(dateObj.getTime())
 ---
 
 <BaseLayout pageTitle={frontmatter.title}>
-  <p>Published on: {dateIso}</p>
-  {frontmatter.author && <p>Written by {frontmatter.author}</p>}
-  {frontmatter.description && <p><em>{frontmatter.description}</em></p>}
+  <article class="post-article">
+    <header class="post-header">
+      <div class="post-meta-bar">
+        <span>DATE // {dateIso}</span>
+        {frontmatter.author && <span>AUTHOR // {frontmatter.author}</span>}
+      </div>
 
-  {
-    frontmatter.image && (
-      <img
-        src={frontmatter.image.url}
-        alt={frontmatter.image.alt}
-        width="300"
-      />
-    )
-  }
+      <h1>{frontmatter.title}</h1>
 
-  <div class="tags">
-    {
-      frontmatter.tags?.map((tag: string) => (
-        <p class="tag">
-          <a href={`/tags/${tag}`}>{tag}</a>
-        </p>
-      ))
-    }
-  </div>
+      {frontmatter.description && (
+        <p class="post-lead">{frontmatter.description}</p>
+      )}
 
-  <slot />
+      {frontmatter.tags && frontmatter.tags.length > 0 && (
+        <div class="post-tags">
+          {frontmatter.tags.map((tag: string) => (
+            <a class="tag-badge" href={`/tags/${tag}`}>#{tag}</a>
+          ))}
+        </div>
+      )}
+
+      {frontmatter.image?.url && (
+        <figure class="post-figure">
+          <img
+            src={frontmatter.image.url}
+            alt={frontmatter.image.alt || frontmatter.title}
+            loading="lazy"
+          />
+        </figure>
+      )}
+    </header>
+
+    <div class="post-content">
+      <slot />
+    </div>
+  </article>
 </BaseLayout>
 
 <style>
-  a {
-    color: #00539f;
+  .post-header {
+    border-bottom: 1px solid var(--border-line);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
   }
 
-  .tags {
+  .post-meta-bar {
     display: flex;
     flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.78rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
   }
 
-  .tag {
-    margin: 0.25em;
-    border: dotted 1px #a1a1a1;
-    border-radius: 0.5em;
-    padding: 0.5em 1em;
-    font-size: 1.15em;
-    background-color: #f8fcfd;
+  .post-header h1 {
+    margin-top: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-lead {
+    font-size: 1.05rem;
+    color: var(--fg-muted);
+    font-style: italic;
+    margin: 0 0 1rem 0;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .tag-badge {
+    font-size: 0.78rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border-line);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--fg-primary);
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .tag-badge:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .post-figure {
+    margin: 1.25rem 0 0 0;
+  }
+
+  .post-figure img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border: 1px solid var(--border-line);
+    display: block;
+  }
+
+  .post-content :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border-line);
+    margin: 2.25rem 0;
+  }
+
+  .post-content :global(blockquote) {
+    margin: 1.5rem 0;
+    padding: 0.5rem 1rem;
+    border-left: 2px solid var(--accent);
+    background: rgba(255, 255, 255, 0.02);
   }
 </style>

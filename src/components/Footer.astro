@@ -2,16 +2,14 @@
 import Social from './Social.astro';
 ---
 
-<footer>
-  <Social platform="instagram" username="nyxa.wtf" />
-  <Social platform="github" username="akhelarre" />
-  <Social platform="youtube" username="@nyxanv" />
+<footer class="cell-meta">
+  <div class="meta-status">
+    <span>STATUS: STATIC_CORE</span>
+    <span>BACKEND: PENDING_JVM</span>
+  </div>
+  <div class="meta-social">
+    <Social platform="instagram" username="nyxa.wtf" />
+    <Social platform="github" username="akhelarre" />
+    <Social platform="youtube" username="@nyxanv" />
+  </div>
 </footer>
-
-<style>
-  footer {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-</style>
