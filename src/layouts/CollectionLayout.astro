@@ -1,0 +1,205 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import BlogPost from '../components/BlogPost.astro';
+import { COLLECTION_META, getAllArchiveEntries, type CollectionMeta } from '../utils/archive';
+
+interface Props {
+  meta: CollectionMeta;
+  posts: any[];
+}
+
+const { meta, posts } = Astro.props;
+const allEntries = await getAllArchiveEntries();
+const countByCol = (colId: string) =>
+  allEntries.filter((e) => e.collectionName === colId).length;
+---
+
+<BaseLayout pageTitle={`COLLECTION // ${meta.title}`}>
+  <section class={`collection-stage col-theme-${meta.id}`}>
+    <header class="col-header">
+      <nav class="col-switcher" aria-label="Cambiar de colección">
+        <a class="col-tab" href="/blog/">
+          [TODOS ({allEntries.length})]
+        </a>
+        <a
+          class={`col-tab ${meta.id === 'cinema_studies' ? 'active' : ''}`}
+          href="/cinema_studies/"
+        >
+          [01 // CINEMA_STUDIES ({countByCol('cinema_studies')})]
+        </a>
+        <a
+          class={`col-tab ${meta.id === 'essays' ? 'active' : ''}`}
+          href="/essays/"
+        >
+          [02 // ESSAYS ({countByCol('essays')})]
+        </a>
+        <a
+          class={`col-tab ${meta.id === 'literature' ? 'active' : ''}`}
+          href="/literature/"
+        >
+          [03 // LITERATURE ({countByCol('literature')})]
+        </a>
+      </nav>
+
+      <div class="col-hero">
+        <div class="col-hero-top">
+          <div>
+            <span class="col-badge">{meta.code} — {meta.badge}</span>
+            <h1>{meta.label}</h1>
+          </div>
+          <input
+            type="search"
+            id="col-search"
+            class="col-search"
+            placeholder={`Buscar en ${meta.title.toLowerCase()}...`}
+            aria-label={`Buscar textos en ${meta.label}`}
+          />
+        </div>
+        <p>{meta.subtitle}</p>
+        <div class="col-stats-bar">
+          <span class="col-count">
+            [{posts.length} {posts.length === 1 ? 'TEXTO INDEXADO' : 'TEXTOS INDEXADOS'}]
+          </span>
+          <span class="col-path">PATH // /content/{meta.id}/*.md</span>
+        </div>
+      </div>
+    </header>
+
+    <slot />
+
+    {posts && posts.length > 0 && (
+      <ul class="col-post-list" id="col-post-list">
+        {posts.map((post) => (
+          <BlogPost
+            url={post.url}
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            image={post.data.image}
+            collection={post.collectionName}
+          />
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>
+
+<script>
+  const searchInput = document.getElementById('col-search') as HTMLInputElement | null;
+  const cards = document.querySelectorAll<HTMLElement>('#col-post-list .post-card');
+
+  searchInput?.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    cards.forEach((card) => {
+      const text = (card.textContent || '').toLowerCase();
+      card.style.display = !q || text.includes(q) ? '' : 'none';
+    });
+  });
+</script>
+
+<style>
+  .col-header {
+    margin-bottom: 1.75rem;
+  }
+
+  .col-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .col-tab {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.78rem;
+    border: 1px solid var(--border-line);
+    background: var(--bg-reading);
+    color: var(--fg-muted);
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .col-tab:hover,
+  .col-tab.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .col-hero {
+    padding: 1.65rem 1.85rem;
+    border: 1px solid var(--border-line);
+    background: var(--bg-reading);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.25);
+  }
+
+  .col-hero-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .col-badge {
+    display: inline-block;
+    font-size: 0.74rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+
+  .col-hero h1 {
+    margin: 0;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
+
+  .col-search {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-line);
+    color: var(--fg-primary);
+    font-family: inherit;
+    font-size: 0.82rem;
+    padding: 0.45rem 0.8rem;
+    min-width: 240px;
+  }
+
+  .col-search:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .col-hero p {
+    margin: 0 0 1rem 0;
+    line-height: 1.65;
+  }
+
+  .col-stats-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-line);
+    font-size: 0.76rem;
+  }
+
+  .col-count {
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+
+  .col-path {
+    color: var(--fg-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .col-post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>
+

@@ -1,0 +1,61 @@
+---
+import CinemaStudiesLayout from '../../layouts/CinemaStudiesLayout.astro';
+import EssaysLayout from '../../layouts/EssaysLayout.astro';
+import LiteratureLayout from '../../layouts/LiteratureLayout.astro';
+import { getAllArchiveEntries } from '../../utils/archive';
+
+export async function getStaticPaths() {
+  const allEntries = await getAllArchiveEntries();
+  const collections = ['cinema_studies', 'essays', 'literature'] as const;
+
+  return collections.flatMap((col) => {
+    const colEntries = allEntries
+      .filter((e) => e.collectionName === col)
+      .sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
+
+    return colEntries.map((entry, idx) => {
+      const prev = idx > 0 ? colEntries[idx - 1] : null;
+      const next = idx < colEntries.length - 1 ? colEntries[idx + 1] : null;
+
+      return {
+        params: {
+          collection: entry.collectionName,
+          slug: entry.slugParam,
+        },
+        props: {
+          entry,
+          entryNumber: idx + 1,
+          totalEntries: colEntries.length,
+          prevPost: prev ? { url: prev.url, title: prev.data.title } : null,
+          nextPost: next ? { url: next.url, title: next.data.title } : null,
+        },
+      };
+    });
+  });
+}
+
+const { entry, entryNumber, totalEntries, prevPost, nextPost } = Astro.props;
+const Content = entry.Content;
+
+const LayoutMap = {
+  cinema_studies: CinemaStudiesLayout,
+  essays: EssaysLayout,
+  literature: LiteratureLayout,
+} as const;
+
+const SelectedLayout =
+  LayoutMap[entry.collectionName as keyof typeof LayoutMap] || LiteratureLayout;
+---
+
+<SelectedLayout
+  frontmatter={{
+    ...entry.data,
+    collection: entry.collectionName,
+  }}
+  entryNumber={entryNumber}
+  totalEntries={totalEntries}
+  prevPost={prevPost}
+  nextPost={nextPost}
+>
+  <Content />
+</SelectedLayout>

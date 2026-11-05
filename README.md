@@ -1,26 +1,58 @@
-# PAGES
-about.astro: Define el título "About" y renderiza el componente AboutLayout con un subtítulo de bienvenida.   
-blog.astro: Carga los posts usando import.meta.glob, los ordena de más reciente a más antiguo utilizando la propiedad pubDate, y los mapea en una lista utilizando el componente BlogPost.   
-index.astro: Establece el portal principal con la bienvenida a Nyxa, describiendo la transición del doomscrolling y el paso a un portal web estático inspirado en los años 2000 al estilo Do It Yourself.   
-rss.xml.js: Configura la generación del canal RSS utilizando los elementos globales de los archivos Markdown para el sitio.   
+# NYXA.WTF // SYS.33 ARCHIVE
 
-# COMPONENTS
-Header.astro: Organiza la cabecera del sitio agrupando los componentes Menu y Navigation dentro de un contenedor flexible con estilos de alineación horizontal.   
-Menu.astro: Renderiza un botón interactivo destinado a desplegar o contraer el menú en la interfaz.   
-Navigation.astro: Agrupa los enlaces principales de navegación (Home, About, Blog, Tags) con estilos en línea de tipo flexbox.   
-Social.astro: Genera un enlace dinámico hacia perfiles externos en plataformas como Instagram, GitHub o YouTube, aplicando estilos personalizados de fondo y color.   
-BlogPost.astro: Estructura cada elemento individual de la lista de publicaciones del blog renderizándolos como elementos de lista (<li>) con su respectivo enlace.   
-Footer.astro: Integra el pie de página instanciando el componente Social con los perfiles y nombres de usuario correspondientes de redes sociales.   
-Greeting.jsx: Componente interactivo hecho con Preact que gestiona un saludo dinámico y aleatorio mediante un estado local y un botón de actualización.
+Portal personal y archivo de **estudios de cine (`cinema_studies`)**, **ensayos (`essays`)** y **literatura (`literature`)** desarrollado por **N. Victoria Arenas (Nyxa NV)**.
 
-# LAYOUT
-AboutLayout.astro: Contiene de forma estática los datos de perfil personales de Nyxa (nombre, país, ocupación, pasatiempos), una lista de habilidades formateadas, y sentencias condicionales sobre su aprendizaje y metas en Astro.   
-BlogLayout.astro: Funciona como una plantilla base para las páginas del blog, agregando elementos estandarizados de bienvenida en la parte inferior junto con la carga del menú y pie de página.   
-BaseLayout.astro: Sirve como la estructura general y reutilizable del sitio web, integrando la cabecera, el título de página, el contenido dinámico mediante slots, y el script del menú interactivo.   
-MarkdownPostLayout.astro: Extiende de BaseLayout para procesar el contenido de los artículos en Markdown, formateando de forma segura las fechas de publicación, autor, descripciones, imágenes opcionales y el listado interactivo de etiquetas con estilos 
+Construido con **Astro 7**, **Content Collections**, **CSS nativo** y **WebGL vanilla** (shader 3D estilo PS2 BIOS reactivo al cursor y al tema cromático).
 
-# SCRIPTS
-menu.js: Captura el evento de clic en el botón con la clase .menu, invierte su atributo aria-expanded y alterna la clase .expanded en el contenedor de los enlaces de navegación (.nav-links)
+---
 
-# STYLES 
-global.css: Define la paleta de colores general del sitio, la tipografía base, los estilos responsive para la barra de navegación (ocultándola en pantallas pequeñas por defecto y mostrándola mediante flexbox cuando se expande, u ocultando el botón al superar los 636px de ancho).   
+## Arquitectura del Proyecto
+
+```text
+src/
+├── content.config.ts             # Configuración de las 3 Content Collections (Zod flexible para Obsidian)
+├── content/
+│   ├── cinema_studies/           # Archivos .md de Estudios de Cine, Cátedras y Análisis Audiovisual
+│   ├── essays/                   # Archivos .md de Ensayos, Filosofía, Política y Ciberespacio
+│   └── literature/               # Archivos .md de Literatura, Crónicas y Fosas Negras
+├── utils/
+│   └── archive.ts                # Utilidad central de indexación, extractos y rutas de colecciones
+├── components/
+│   ├── BlogPost.astro            # Tarjeta de entrada con badge de colección y fecha
+│   ├── Footer.astro              # Pie de página con estado del sistema, redes y RSS
+│   ├── Header.astro              # Cabecera reticular y navegación (/cinema_studies, /essays, /literature)
+│   ├── ShaderCanvas.astro        # Lienzo WebGL 3D (estética PS2 BIOS + dithering 16-bit)
+│   ├── Social.astro              # Botón de enlace a perfiles externos (GitHub, IG, YouTube)
+│   └── ThemeIcon.astro           # Selector de tema cromático (Claro / Oscuro)
+├── layouts/
+│   ├── AboutLayout.astro         # Layout con ficha técnica del avatar (alias, disciplina, stack)
+│   ├── BaseLayout.astro          # Estructura base HTML, integración de ShaderCanvas y frame principal
+│   ├── BlogLayout.astro          # Contenedor de listado para el índice de artículos
+│   └── MarkdownPostLayout.astro  # Marco de lectura de alto contraste y paginador de entradas
+├── pages/
+│   ├── index.astro               # PORTAL // 00: Declaración de oficio y soberanía digital Y2K
+│   ├── about.astro               # MANIFESTO // EL IRIS: Ensayo sobre la cine-sensación
+│   ├── blog.astro                # ARCHIVE: Índice general y tarjetas de acceso a las 3 colecciones
+│   ├── [collection]/
+│   │   ├── index.astro           # Índice por colección (/cinema_studies/, /essays/, /literature/)
+│   │   └── [slug].astro          # Renderizado de cada archivo .md con navegación Anterior / Siguiente
+│   ├── rss.xml.js                # Canal de sindicación RSS autogenerado
+│   └── tags/
+│       ├── index.astro           # TAGS // INDEX: Matriz de etiquetas y conteo de nodos
+│       └── [tag].astro           # Rutas dinámicas filtradas por etiqueta
+└── styles/
+    └── global.css                # Variables de tema, superficie de lectura (--bg-reading) y grilla
+```
+
+> **Nota**: Todo el material exclusivo de **Ars Arka** (`wiki.astro`, las Islands `RhizomeGraph.tsx`, `CodexSearch.tsx`, `ChronicleTimeline.tsx` y los textos `post-1.md` y `post-11.md`) se encuentra resguardado en la carpeta `_arsarka_export/` listo para trasladarse al repositorio de `arsarka.xyz`.
+
+---
+
+## Cómo Agregar Nuevos Textos `.md`
+
+Simplemente guarda o arrastra cualquier archivo `.md` (incluso notas directas de **Obsidian** sin frontmatter completo) dentro de cualquiera de las tres carpetas:
+- `src/content/cinema_studies/`
+- `src/content/essays/`
+- `src/content/literature/`
+
+El cargador automático detectará el título a partir del nombre del archivo si no tiene `title:` en el frontmatter, generará un extracto limpio de texto y creará su ruta en `/<colección>/<slug>/`.

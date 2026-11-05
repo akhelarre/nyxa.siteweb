@@ -2,13 +2,22 @@
 const { platform, username } = Astro.props;
 ---
 
-<a href={`https://www.${platform}.com/${username}`}>{platform}</a>
+<a href={`https://www.${platform}.com/${username}`} target="_blank" rel="noopener noreferrer">[{platform.toUpperCase()}]</a>
 
 <style>
   a {
-    padding: 0.5rem 1rem;
-    color: white;
-    background-color: #4c1d95;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.78rem;
+    color: var(--fg-primary);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-line);
     text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+
+  a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.07);
   }
 </style>

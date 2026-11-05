@@ -1,11 +1,25 @@
 ---
-const { title, url, description, pubDate, image } = Astro.props;
+const { title, url, description, pubDate, image, collection } = Astro.props;
 const formattedDate = pubDate ? new Date(pubDate).toISOString().split('T')[0] : '';
+
+const collectionLabels: Record<string, string> = {
+  cinema_studies: 'CINEMA_STUDIES',
+  essays: 'ESSAYS',
+  literature: 'LITERATURE'
+};
+const collectionLabel = collection ? (collectionLabels[collection] || String(collection).toUpperCase()) : '';
 ---
 
-<li class="post-card">
+<li class="post-card" data-collection={collection || 'all'}>
   <div class="post-info">
-    {formattedDate && <div class="post-meta">{formattedDate}</div>}
+    <div class="post-meta-row">
+      {formattedDate && <span class="post-meta">{formattedDate}</span>}
+      {collection && (
+        <a class="collection-pill" href={`/${collection}/`}>
+          [{collectionLabel}]
+        </a>
+      )}
+    </div>
     <h3><a href={url}>{title}</a></h3>
     {description && <p class="post-desc">{description}</p>}
   </div>
@@ -21,41 +35,76 @@ const formattedDate = pubDate ? new Date(pubDate).toISOString().split('T')[0] : 
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1.5rem;
-    padding: 1.25rem;
-    margin-bottom: 0.75rem;
+    gap: 1.75rem;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.15rem;
     border: 1px solid var(--border-line);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-reading);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+    transition: border-color 0.15s ease;
+  }
+
+  .post-card:hover {
+    border-color: var(--accent);
   }
 
   .post-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .post-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .post-meta {
+    font-size: 0.76rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .collection-pill {
+    font-size: 0.72rem;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--border-line);
+    color: var(--fg-primary);
+    background: rgba(255, 255, 255, 0.04);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .collection-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .post-card h3 {
     font-size: 1.25rem;
-    margin: 0.25rem 0 0.5rem 0;
+    margin: 0;
+    line-height: 1.35;
   }
 
   .post-card h3 a {
-    color: var(--fg-primary); /* Hereda el color principal de los títulos */
+    color: var(--fg-primary);
     text-decoration: none;
   }
 
   .post-card h3 a:hover {
-    color: var(--accent); /* Cambia al color de acento al pasar el cursor */
+    color: var(--accent);
   }
 
   .post-desc {
     font-size: 0.95rem;
-    color: var(--fg-muted); /* Hereda el color de texto secundario */
-  }
-
-  .post-meta {
-    font-size: 0.75rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    line-height: 1.65;
+    margin: 0;
+    color: var(--fg-muted);
   }
 
   .post-thumb img {

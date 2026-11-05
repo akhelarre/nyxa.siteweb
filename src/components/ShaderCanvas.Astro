@@ -6,15 +6,19 @@
     inset: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
     display: block;
+    /* Renderizado tipo PS2 / CRT escalado sin suavizado borroso */
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
   }
 </style>
 
 <script>
   const canvas = document.getElementById('gl-viewport') as HTMLCanvasElement | null;
-  const gl = canvas?.getContext('webgl');
+  const gl = (canvas?.getContext('webgl', { antialias: false, depth: false }) ||
+              canvas?.getContext('experimental-webgl')) as WebGLRenderingContext | null;
 
   if (canvas && gl) {
     const vsSource = `
@@ -31,38 +35,135 @@
       uniform float u_time;
       uniform float u_dark;
 
+      mat2 rot(float a) {
+        float s = sin(a), c = cos(a);
+        return mat2(c, -s, s, c);
+      }
+
+      // SDF de Caja 3D (Torres monolíticas de memoria PS2)
+      float sdBox(vec3 p, vec3 b) {
+        vec3 q = abs(p) - b;
+        return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+      }
+
+      // Escena 3D: Cubo central suspendido + Pilares de datos PS2
+      vec2 map(vec3 p) {
+        // Cubo monolítico central flotando en la parte superior-media de la pantalla
+        vec3 cPos = p - vec3(0.0, 1.45, 0.0);
+        cPos.xz *= rot(u_time * 0.45);
+        cPos.xy *= rot(u_time * 0.32);
+        float dCenterCube = sdBox(cPos, vec3(0.68));
+
+        vec3 q = p;
+        q.z += u_time * 1.35;
+
+        vec2 cellId = floor(q.xz / 2.6);
+        q.xz = mod(q.xz, 2.6) - 1.3;
+
+        // Altura pseudo-aleatoria por celda (Torres del BIOS PS2 más elevadas)
+        float h = fract(sin(dot(cellId, vec2(12.9898, 78.233))) * 43758.5453);
+        float towerHeight = 0.8 + h * 3.6 + 0.35 * sin(u_time * 0.9 + h * 6.28);
+
+        // Elevamos la base de los cubos/torres de -2.2 a -1.15 para que suban en pantalla
+        vec3 boxPos = q - vec3(0.0, -1.15 + towerHeight * 0.5, 0.0);
+        float dBox = sdBox(boxPos, vec3(0.36, towerHeight * 0.5, 0.36));
+
+        if (dCenterCube < dBox) {
+          return vec2(dCenterCube, 0.95);
+        }
+        return vec2(dBox, h);
+      }
+
+      // Bayer 4x4 aproximado para dithering de 16-bit (PS2 Framebuffer)
+      float dither4x4(vec2 pos) {
+        vec2 p = floor(mod(pos, 4.0));
+        float idx = p.x + p.y * 4.0;
+        return fract(sin(idx * 91.3458) * 47453.5453) - 0.5;
+      }
+
       void main() {
-        // Aspect-corrected coordinates for 1:1 square geometry
-        float minDim = min(u_resolution.x, u_resolution.y);
-        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-        vec2 squareUv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / minDim;
-        vec2 mouseUv = (u_mouse - 0.5 * u_resolution.xy) / minDim;
+        vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        vec2 m = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
 
-        // Distance from pointer for subtle spatial distortion
-        float dist = length(squareUv - mouseUv);
-        float ripple = sin(dist * 18.0 - u_time * 1.5) * exp(-dist * 3.5) * 0.015;
+        // Cámara flotando en el vacío con encuadre más elevado
+        vec3 ro = vec3(m.x * 1.4, 0.85 - m.y * 0.8, 3.8);
+        vec3 rd = normalize(vec3(uv + vec2(0.0, 0.14), -1.15));
 
-        // Primary and secondary Bauhaus geometric grids
-        vec2 majorGrid = fract((squareUv + ripple) * 8.0);
-        vec2 minorGrid = fract((squareUv + ripple) * 32.0);
-        float majorLine = step(0.96, max(majorGrid.x, majorGrid.y));
-        float minorLine = step(0.95, max(minorGrid.x, minorGrid.y)) * 0.35;
-        float gridMask = clamp(majorLine + minorLine, 0.0, 1.0);
+        // Inclinación más horizontal para elevar los cubos en el viewport
+        rd.yz *= rot(0.18 + m.y * 0.15);
+        rd.xz *= rot(u_time * 0.08 + m.x * 0.35);
 
-        // Interference wave
-        float wave = 0.03 * sin(uv.x * 10.0 + u_time * 0.5) * cos(uv.y * 10.0 - u_time * 0.4);
+        // Raymarching con acumulación de brillo volumétrico (Orbes de luz / Niebla)
+        float t = 0.0;
+        float glow = 0.0;
+        float hitId = 0.0;
+        float hit = 0.0;
+        vec3 hitPos = vec3(0.0);
 
-        // Light mode palette (#fce7f3 base, #1e1b4b lines)
-        vec3 lightBase = vec3(0.988, 0.906, 0.953) + wave;
-        vec3 lightGrid = vec3(0.118, 0.106, 0.294);
-        vec3 lightFinal = mix(lightBase, lightGrid, gridMask * 0.14);
+        for (int i = 0; i < 38; i++) {
+          vec3 p = ro + rd * t;
+          vec2 res = map(p);
+          float d = res.x;
 
-        // Dark mode palette (#1a0b14 base, #fbcfe8 / #ff9776 lines)
-        vec3 darkBase = vec3(0.065, 0.027, 0.051) + wave;
-        vec3 darkGrid = vec3(0.32, 0.16, 0.25);
-        vec3 darkFinal = mix(darkBase, darkGrid, gridMask * 0.4);
+          // Acumulación de energía etérea cerca de las torres
+          glow += 0.018 / (0.12 + abs(d) * abs(d));
 
-        gl_FragColor = vec4(mix(lightFinal, darkFinal, u_dark), 1.0);
+          if (d < 0.015) {
+            hit = 1.0;
+            hitId = res.y;
+            hitPos = p;
+            break;
+          }
+          if (t > 22.0) break;
+          t += d * 0.8;
+        }
+
+        // 7 Orbes luminosos en espiral (Reloj de Cristal PS2 / Cristales Grysials)
+        float orbGlow = 0.0;
+        for (int j = 0; j < 7; j++) {
+          float fj = float(j);
+          float angle = u_time * 1.4 + fj * 0.897;
+          vec2 orbPos = vec2(cos(angle), sin(angle * 0.7)) * (0.28 + 0.08 * sin(u_time * 0.5 + fj));
+          orbPos += m * 0.25;
+          float dOrb = length(uv - orbPos);
+          orbGlow += 0.0032 / (dOrb * dOrb + 0.0018);
+        }
+
+        // Retícula en las caras de los monolitos
+        float edgeGrid = 0.0;
+        if (hit > 0.5) {
+          vec3 q = hitPos;
+          q.z += u_time * 1.35;
+          vec2 faceUv = fract(q.xy * 2.5);
+          edgeGrid = step(0.88, max(faceUv.x, faceUv.y));
+        }
+
+        float fog = exp(-t * 0.095);
+
+        // Paleta Modo Oscuro (Vacío Índigo/Violeta PS2 + Cian Etéreo + Magenta/Coral Cyberia)
+        vec3 darkBg = mix(vec3(0.03, 0.015, 0.07), vec3(0.11, 0.03, 0.14), clamp(uv.y + 0.5, 0.0, 1.0));
+        vec3 darkTower = mix(vec3(0.08, 0.14, 0.34), vec3(0.28, 0.12, 0.38), hitId);
+        darkTower += edgeGrid * vec3(0.2, 0.65, 0.95) * 0.45;
+        vec3 darkCol = mix(darkBg, darkTower, hit * fog);
+        darkCol += glow * vec3(0.10, 0.32, 0.68) * 0.28;
+        darkCol += orbGlow * mix(vec3(0.25, 0.85, 1.0), vec3(1.0, 0.45, 0.68), 0.5 + 0.5 * sin(u_time));
+
+        // Paleta Modo Claro (Cristal Lavanda/Rosa Y2K + Geometría Azul Cobalto)
+        vec3 lightBg = mix(vec3(0.96, 0.89, 0.95), vec3(0.86, 0.88, 0.98), clamp(uv.y + 0.5, 0.0, 1.0));
+        vec3 lightTower = mix(vec3(0.68, 0.72, 0.92), vec3(0.85, 0.68, 0.88), hitId);
+        lightTower -= edgeGrid * vec3(0.25, 0.28, 0.55) * 0.35;
+        vec3 lightCol = mix(lightBg, lightTower, hit * fog);
+        lightCol -= glow * vec3(0.12, 0.15, 0.35) * 0.08;
+        lightCol += orbGlow * vec3(0.15, 0.38, 0.95) * 0.22;
+
+        vec3 col = mix(lightCol, darkCol, u_dark);
+
+        // Scanlines CRT entrelazadas (480i PS2) + Dithering de cuantización 16-bit
+        float scanline = sin(gl_FragCoord.y * 3.14159) * 0.045;
+        float dither = dither4x4(gl_FragCoord.xy) / 32.0;
+        col = floor((col - scanline + dither) * 32.0) / 32.0;
+
+        gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
       }
     `;
 
@@ -98,33 +199,41 @@
 
     let mouseX = window.innerWidth * 0.5;
     let mouseY = window.innerHeight * 0.5;
+    let targetMouseX = mouseX;
+    let targetMouseY = mouseY;
     let currentDark = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
 
     window.addEventListener('pointermove', (e) => {
-      mouseX = e.clientX;
-      mouseY = window.innerHeight - e.clientY;
+      targetMouseX = e.clientX;
+      targetMouseY = window.innerHeight - e.clientY;
     });
 
+    // Resolución interna tipo PS2 (~42% de escala nativa) para look retro auténtico y alto rendimiento
+    const PS2_SCALE = 0.42;
+
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      canvas.width = Math.max(320, Math.floor(window.innerWidth * PS2_SCALE));
+      canvas.height = Math.max(240, Math.floor(window.innerHeight * PS2_SCALE));
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
     window.addEventListener('resize', resize);
     resize();
 
     const render = (time: number) => {
-      const targetDark = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
-      currentDark += (targetDark - currentDark) * 0.08;
+      if (!document.hidden) {
+        const targetDark = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
+        currentDark += (targetDark - currentDark) * 0.08;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      gl.uniform2f(resLoc, canvas.width, canvas.height);
-      gl.uniform2f(mouseLoc, mouseX * dpr, mouseY * dpr);
-      gl.uniform1f(timeLoc, time * 0.001);
-      gl.uniform1f(darkLoc, currentDark);
+        mouseX += (targetMouseX - mouseX) * 0.06;
+        mouseY += (targetMouseY - mouseY) * 0.06;
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.uniform2f(resLoc, canvas.width, canvas.height);
+        gl.uniform2f(mouseLoc, mouseX * PS2_SCALE, mouseY * PS2_SCALE);
+        gl.uniform1f(timeLoc, time * 0.001);
+        gl.uniform1f(darkLoc, currentDark);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
       requestAnimationFrame(render);
     };
     requestAnimationFrame(render);

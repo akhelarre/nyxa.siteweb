@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllArchiveEntries } from '../../utils/archive';
 
-const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
-const tags = [...new Set(allPosts.flatMap((post: any) => post.frontmatter.tags || []))].sort();
+const allPosts = await getAllArchiveEntries();
+const tags = [...new Set(allPosts.flatMap((post) => post.data.tags || []))].sort();
 const pageTitle = "TAGS // INDEX";
 ---
 
@@ -12,7 +13,7 @@ const pageTitle = "TAGS // INDEX";
 
   <div class="tags-matrix">
     {tags.map((tag) => {
-      const count = allPosts.filter((post: any) => (post.frontmatter.tags || []).includes(tag)).length;
+      const count = allPosts.filter((post) => (post.data.tags || []).includes(tag)).length;
       return (
         <a class="tag-cell" href={`/tags/${tag}`}>
           <span class="tag-name">#{tag}</span>
@@ -37,17 +38,16 @@ const pageTitle = "TAGS // INDEX";
     align-items: center;
     padding: 0.75rem 1rem;
     border: 1px solid var(--border-line);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-reading);
     color: var(--fg-primary);
     text-decoration: none;
     font-size: 0.9rem;
-    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    transition: border-color 0.15s ease, color 0.15s ease;
   }
 
   .tag-cell:hover {
     border-color: var(--accent);
     color: var(--accent);
-    background: rgba(255, 255, 255, 0.07);
   }
 
   .tag-count {

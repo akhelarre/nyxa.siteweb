@@ -1,36 +1,193 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogPost from '../components/BlogPost.astro';
+import { getAllArchiveEntries } from '../utils/archive';
+
+const allPosts = await getAllArchiveEntries();
+const recentPosts = allPosts.slice(0, 6);
+const countByCol = (colId: string) =>
+  allPosts.filter((p) => p.collectionName === colId).length;
 const pageTitle = "PORTAL // 00";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <section>
-    <h1>DISEÑADORA &amp;  VIRTUAL</h1>
-    <p>
-      Del celuloide a la materia etherica del dato. Comprensión de la imagen en su capa mimetica. 
-      Oficio de diseño y producción de imagen, sonido y movimiento. Cineasta Profesional y Programadora.
-    </p>
+  <div class="portal-frame">
+    <section>
+      <h1>DISEÑADORA &amp; VIRTUAL</h1>
+      <p>
+        Del celuloide a la materia ethérica del dato. Comprensión de la imagen en su capa mimética. 
+        Oficio de diseño y producción de imagen, sonido y movimiento. Cineasta Profesional y Programadora.
+      </p>
+    </section>
+
+    <section>
+      <h2>Nyxa What The Fuck ???</h2>
+      <p>
+        Este es mi portal personal, llevaba demasiado tiempo navegando, perdida en la ansiedad
+        del doomscrolling, infestada de viralidad memética y el fin del mundo encima. 
+        Quizás también para no sentir culpa del placer que me da mi trabajo.
+        Después de una década dedicada al cine, comencé a estudiar programación.
+        La exigencia técnica, de la lógica binaria, me llevó a replantearme como cineasta.
+        Después de todo, elegí la sintaxis nativa de Cyberia para abolir mi propia narrativa.   
+      </p>
+
+      <h2>El Portal</h2>
+      <p>
+        Y2K. Antes las redes sociales no eran tan malvadas. El algoritmo siempre me cancela. 
+        No me interesa tampoco la subversión, curioso es que a veces piensan que soy más de derechas.
+        Sí me interesa la política, esto es un acto de soberanía. Este portal es de dominio público.
+        El repositorio está en mi Github. Me interesa que este contenido te haga feliz. 
+        Ni siquiera que te haga pensar, solo que sea útil. Yo lo hago por diversión.
+        Después de todo, ser corpo es súper aburrido.
+      </p>
+    </section>
+  </div>
+
+  <section class="portal-collections">
+    <div class="section-head">
+      <h2>COLECCIONES DEL ARCHIVO ({allPosts.length} NODOS)</h2>
+      <a href="/blog/" class="view-all-link">[EXPLORAR /BLOG_ARCHIVE COMPLETO] →</a>
+    </div>
+
+    <div class="col-boxes">
+      <a href="/cinema_studies/" class="col-box">
+        <span class="box-code">01 // CINEMA_STUDIES</span>
+        <h3>Estudios de Cine &amp; Medios</h3>
+        <p>Cátedras, teoría de la imagen, análisis fílmico, montaje y cine-sensación.</p>
+        <span class="box-count">[{countByCol('cinema_studies')} textos] →</span>
+      </a>
+
+      <a href="/essays/" class="col-box">
+        <span class="box-code">02 // ESSAYS</span>
+        <h3>Ensayos &amp; Pensamiento</h3>
+        <p>Filosofía, lengua híbrida, política, crítica cultural y ciberespacio.</p>
+        <span class="box-count">[{countByCol('essays')} textos] →</span>
+      </a>
+
+      <a href="/literature/" class="col-box">
+        <span class="box-code">03 // LITERATURE</span>
+        <h3>Literatura &amp; Crónicas</h3>
+        <p>Narrativa, poesía, guiones, Fosas Negras y crónicas urbanas.</p>
+        <span class="box-count">[{countByCol('literature')} textos] →</span>
+      </a>
+    </div>
   </section>
 
-  <section>
-    <h2>Nyxa What The Fuck ???</h2>
-    <p>
-      Este es mi portal personal, llevaba demasiado tiempo navegando, perdida en la ansiedad
-      del doomscrolling, infestada de viralidad memética y el fin del mundo encima. 
-      Quizás también para no sentir culpa del placer que me da mi trabajo.
-      Después de una década dedicada al cine, comencé a estudiar programación.
-      La exigencia técnica, de la lógica binaria, me llevo a replantearme como cineasta.
-      Después de todo, elegí la sintaxis nativa de Cyberia para abolir mi propia narrativa.   
-    </p>
-
-    <h2>El Portal</h2>
-    <p>
-    Y2K. Antes las redes sociales no eran tan malvadas. El algoritmo siempre me cancela. 
-    No me interesa tampoco la subversión, curioso es que a veces piensan que soy más de derechas.
-    Si me interesa la política, esto es un acto de soberanía. Este portal es de dominio público.
-    El repositorio está en mi Github. Me interesa que este contenido te haga feliz. 
-    Ni si quiera que te haga pensar, solo que sea útil. Yo lo hago por diversión.
-    Después de todo, ser corpo es super aburrido.
-    </p>
+  <section class="portal-recent">
+    <div class="section-head">
+      <h2>ÚLTIMAS TRANSMISIONES</h2>
+      <a href="/blog/" class="view-all-link">[VER TODAS ({allPosts.length})] →</a>
+    </div>
+    <ul class="recent-list">
+      {recentPosts.map((post) => (
+        <BlogPost
+          url={post.url}
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          image={post.data.image}
+          collection={post.collectionName}
+        />
+      ))}
+    </ul>
   </section>
 </BaseLayout>
+
+<style>
+  .portal-frame {
+    background: var(--bg-reading);
+    border: 1px solid var(--border-line);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 2.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+
+  .portal-frame h1 {
+    margin-top: 0;
+  }
+
+  .portal-collections {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .view-all-link {
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: var(--accent);
+    border: 1px solid var(--border-line);
+    background: var(--bg-reading);
+    padding: 0.35rem 0.75rem;
+  }
+
+  .view-all-link:hover {
+    border-color: var(--accent);
+  }
+
+  .col-boxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .col-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1.35rem 1.5rem;
+    border: 1px solid var(--border-line);
+    background: var(--bg-reading);
+    text-decoration: none;
+    color: var(--fg-primary);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .col-box:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .box-code {
+    font-size: 0.74rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+
+  .col-box h3 {
+    margin: 0.1rem 0;
+    font-size: 1.15rem;
+  }
+
+  .col-box p {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .box-count {
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--accent);
+  }
+
+  .recent-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>

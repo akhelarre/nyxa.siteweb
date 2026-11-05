@@ -1,0 +1,14 @@
+---
+import MarkdownPostLayout from './MarkdownPostLayout.astro';
+
+const props = Astro.props;
+const frontmatter = {
+  ...(props.frontmatter || {}),
+  collection: 'essays',
+};
+---
+
+<MarkdownPostLayout {...props} frontmatter={frontmatter}>
+  <slot />
+</MarkdownPostLayout>
+

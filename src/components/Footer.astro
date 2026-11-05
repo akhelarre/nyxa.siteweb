@@ -11,5 +11,24 @@ import Social from './Social.astro';
     <Social platform="instagram" username="nyxa.wtf" />
     <Social platform="github" username="akhelarre" />
     <Social platform="youtube" username="@nyxanv" />
+    <a class="rss-link" href="/rss.xml">[RSS]</a>
   </div>
 </footer>
+
+<style>
+  .rss-link {
+    padding: 0.25rem 0.65rem;
+    font-size: 0.78rem;
+    color: var(--fg-primary);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-line);
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+
+  .rss-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.07);
+  }
+</style>

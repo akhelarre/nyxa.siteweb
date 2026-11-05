@@ -1,22 +1,196 @@
 ---
 import BlogLayout from '../layouts/BlogLayout.astro';
 import BlogPost from '../components/BlogPost.astro';
+import { getAllArchiveEntries } from '../utils/archive';
 
-const allPosts: any[] = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
-allPosts.sort((a, b) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf());
-const pageTitle = "BLOG_ARCHIVE";
+const allPosts = await getAllArchiveEntries();
+const pageTitle = "BLOG_ARCHIVE // COLLECTIONS";
+
+const countByCol = (colId: string) =>
+  allPosts.filter((p) => p.collectionName === colId).length;
 ---
 
 <BlogLayout pageTitle={pageTitle}>
-  <ul>
-    {allPosts.map((post: any) => (
-      <BlogPost
-        url={post.url}
-        title={post.frontmatter.title}
-        description={post.frontmatter.description}
-        pubDate={post.frontmatter.pubDate}
-        image={post.frontmatter.image}
-      />
-    ))}
-  </ul>
+  <div class="archive-engine">
+    <input type="radio" name="col-filter" id="filter-all" class="col-radio" checked />
+    <input type="radio" name="col-filter" id="filter-cinema" class="col-radio" />
+    <input type="radio" name="col-filter" id="filter-essays" class="col-radio" />
+    <input type="radio" name="col-filter" id="filter-literature" class="col-radio" />
+
+    <header class="archive-header">
+      <div class="archive-intro">
+        <div class="intro-top">
+          <h1>ARCHIVO GENERAL DE PUBLICACIONES</h1>
+          <input
+            type="search"
+            id="archive-search"
+            class="archive-search"
+            placeholder="Filtrar por título o contenido..."
+            aria-label="Filtrar publicaciones por título o descripción"
+          />
+        </div>
+        <p>
+          Selecciona una colección para filtrar los nodos o explora el archivo completo ({allPosts.length} textos).
+        </p>
+      </div>
+
+      <div class="collections-nav" role="tablist" aria-label="Filtrar por colección">
+        <label for="filter-all" class="col-card">
+          <span class="col-id">[ALL_NODES]</span>
+          <strong>ARCHIVO COMPLETO</strong>
+          <span class="col-total">{allPosts.length} textos</span>
+        </label>
+
+        <label for="filter-cinema" class="col-card">
+          <span class="col-id">01 // CINEMA_STUDIES</span>
+          <strong>Estudios de Cine &amp; Medios</strong>
+          <span class="col-total">{countByCol('cinema_studies')} textos</span>
+        </label>
+
+        <label for="filter-essays" class="col-card">
+          <span class="col-id">02 // ESSAYS</span>
+          <strong>Ensayos &amp; Pensamiento</strong>
+          <span class="col-total">{countByCol('essays')} textos</span>
+        </label>
+
+        <label for="filter-literature" class="col-card">
+          <span class="col-id">03 // LITERATURE</span>
+          <strong>Literatura &amp; Crónicas</strong>
+          <span class="col-total">{countByCol('literature')} textos</span>
+        </label>
+      </div>
+    </header>
+
+    <ul class="archive-list" id="archive-list">
+      {allPosts.map((post) => (
+        <BlogPost
+          url={post.url}
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          image={post.data.image}
+          collection={post.collectionName}
+        />
+      ))}
+    </ul>
+  </div>
 </BlogLayout>
+
+<script>
+  const searchInput = document.getElementById('archive-search') as HTMLInputElement | null;
+  const cards = document.querySelectorAll<HTMLElement>('#archive-list .post-card');
+
+  searchInput?.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    cards.forEach((card) => {
+      const text = (card.textContent || '').toLowerCase();
+      card.style.display = !q || text.includes(q) ? '' : 'none';
+    });
+  });
+</script>
+
+<style>
+  .col-radio {
+    display: none;
+  }
+
+  .archive-header {
+    margin-bottom: 1.75rem;
+  }
+
+  .archive-intro {
+    padding: 1.5rem 1.75rem;
+    border: 1px solid var(--border-line);
+    background: var(--bg-reading);
+    margin-bottom: 1rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  }
+
+  .intro-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .archive-intro h1 {
+    margin: 0;
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+  }
+
+  .archive-search {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-line);
+    color: var(--fg-primary);
+    font-family: inherit;
+    font-size: 0.82rem;
+    padding: 0.45rem 0.8rem;
+    min-width: 250px;
+  }
+
+  .archive-search:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .archive-intro p {
+    margin: 0;
+  }
+
+  .collections-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.85rem;
+  }
+
+  .col-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--border-line);
+    background: var(--bg-reading);
+    color: var(--fg-primary);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .col-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  /* Estado activo según colección seleccionada */
+  #filter-all:checked ~ .archive-header label[for="filter-all"],
+  #filter-cinema:checked ~ .archive-header label[for="filter-cinema"],
+  #filter-essays:checked ~ .archive-header label[for="filter-essays"],
+  #filter-literature:checked ~ .archive-header label[for="filter-literature"] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  /* Filtrado instantáneo CSS de tarjetas por colección */
+  #filter-cinema:checked ~ .archive-list :global(.post-card:not([data-collection="cinema_studies"])),
+  #filter-essays:checked ~ .archive-list :global(.post-card:not([data-collection="essays"])),
+  #filter-literature:checked ~ .archive-list :global(.post-card:not([data-collection="literature"])) {
+    display: none;
+  }
+
+  .col-id {
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+
+  .col-card strong {
+    font-size: 0.92rem;
+  }
+
+  .col-total {
+    font-size: 0.78rem;
+    color: var(--fg-muted);
+  }
+</style>

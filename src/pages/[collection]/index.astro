@@ -1,0 +1,24 @@
+---
+import CollectionLayout from '../../layouts/CollectionLayout.astro';
+import { COLLECTION_META, getAllArchiveEntries, type CollectionName } from '../../utils/archive';
+
+export async function getStaticPaths() {
+  const allEntries = await getAllArchiveEntries();
+  const collectionNames: CollectionName[] = ['cinema_studies', 'essays', 'literature'];
+
+  return collectionNames.map((col) => {
+    const posts = allEntries.filter((entry) => entry.collectionName === col);
+    return {
+      params: { collection: col },
+      props: {
+        meta: COLLECTION_META[col],
+        posts,
+      },
+    };
+  });
+}
+
+const { meta, posts } = Astro.props;
+---
+
+<CollectionLayout meta={meta} posts={posts} />
